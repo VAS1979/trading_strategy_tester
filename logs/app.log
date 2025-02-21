@@ -1,0 +1,19 @@
+
+2025-02-12 16:34:42,993 - INFO - HTTP Request: GET https://iss.moex.com/iss/securities/MTSS.json "HTTP/1.1 200 OK"
+2025-02-12 16:34:44,060 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2018-01-01&till=2024-12-28&interval=24&start=0 "HTTP/1.1 200 OK"
+2025-02-12 16:34:44,530 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2018-01-01&till=2024-12-28&interval=24&start=500 "HTTP/1.1 200 OK"
+2025-02-12 16:34:44,897 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2018-01-01&till=2024-12-28&interval=24&start=1000 "HTTP/1.1 200 OK"
+2025-02-12 16:34:45,250 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2018-01-01&till=2024-12-28&interval=24&start=1500 "HTTP/1.1 200 OK"
+2025-02-12 16:34:45,582 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2018-01-01&till=2024-12-28&interval=24&start=1754 "HTTP/1.1 200 OK"
+2025-02-12 16:34:45,649 - INFO - Данные успешно сохранены в dataframe_history/MTSS.csv
+2025-02-12 16:34:45,650 - INFO - Успешное выполнение
+2025-02-14 14:52:09,794 - INFO - HTTP Request: GET https://iss.moex.com/iss/securities/MTSS.json "HTTP/1.1 200 OK"
+2025-02-14 14:52:10,983 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=0 "HTTP/1.1 200 OK"
+2025-02-14 14:52:11,579 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=500 "HTTP/1.1 200 OK"
+2025-02-14 14:52:12,039 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=1000 "HTTP/1.1 200 OK"
+2025-02-14 14:52:12,447 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=1500 "HTTP/1.1 200 OK"
+2025-02-14 14:52:12,801 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=2000 "HTTP/1.1 200 OK"
+2025-02-14 14:52:13,139 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=2500 "HTTP/1.1 200 OK"
+2025-02-14 14:52:13,482 - INFO - HTTP Request: GET https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/MTSS/candles.json?from=2014-01-01&till=2024-12-28&interval=24&start=2749 "HTTP/1.1 200 OK"
+2025-02-14 14:52:13,578 - INFO - Данные успешно сохранены в dataframe_history/MTSS.csv
+2025-02-14 14:52:13,579 - INFO - Успешное выполнение
