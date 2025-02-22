@@ -1,13 +1,17 @@
 {
+    "start_date": "2014-01-06",
+    "end_date": "2024-12-28",
     "initial_cache": 400000,
     "open_price": 215,
     "close_price": 300,
+    "buy_count": 4,
+    "sell_count": 2,
     "comission_percent": 0.00035,
     "tax_percent": 0.13,
-    "invest_period_days": 2749,
-    "invest_period_years": 7.5,
-    "total_income_sum": 377966.55,
-    "total_income_perc": 194.49,
-    "incom_year_sum": 50395.54,
-    "incom_year_pers": 25.93
+    "invest_period_days": 4009,
+    "invest_period_years": 10.98,
+    "total_income_sum": 375192.42,
+    "total_income_perc": 193.8,
+    "incom_year_sum": 34170.53,
+    "incom_year_pers": 17.65
 }

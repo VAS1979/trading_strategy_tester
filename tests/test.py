@@ -3,6 +3,7 @@
 import csv
 import logging
 import json
+from datetime import datetime
 
 FILEPATH = "dataframe_history/MTSS.csv"
 FILEPATH_TO_FINISH_DATA = "processed_data/MTSS.csv"
@@ -13,7 +14,7 @@ CLOSE_PRICE = 300
 COMISSION = 0.00035
 TAX = 0.13
 COLUMNS = ['date', 'high', 'low', 'cache', 'share_count', 'amount_in_shares',
-           'overall_result']
+           'overall_result', 'comission', 'tax']
 input_data = [INITIAL_CACHE, OPEN_PRICE, CLOSE_PRICE, COMISSION, TAX]
 
 
@@ -77,55 +78,75 @@ def calculates_data(data: list, in_data: list) -> list:
         count: (float): Времененная величина для расчета количества акций.
         share_count (int): Количество приобретенных акций.
         amount_in_shares (float): Текущая стоимость всех приобретенных акций.
-        overall_result (float): Текущий общий результат
-            (стоимость акций + остаток кэша).
+        overall_result (float): Общий результат (стоимость акций + кэш).
+        buy_count (int): Количество покупок.
+        sell_count (int): Количество продаж.
         in_data_copy (list): Копия списка in_data для работы с данными.
 
     Returns:
         data_list: Список списков, каждый из которых описывает состояние
-            торгового портфеля на определённую дату: [дата (str),
-            максимальная цена (float), минимальная цена (float), остаток
-            кэша (float), количество акций (int), стоимость акций (float),
-            общий результат (float)]. Возвращает None в случае ошибки.
+            торгового портфеля на определённую дату: [дата, максимальная цена,
+            минимальная цена, остаток кэша, количество акций, стоимость акций,
+            общий результат].
+        counting_transactions: Список сделок [кол-во покупок, кол-во продаж].
     """
 
     try:
         share_count = 0
         amount_in_shares = 0
         overall_result = 0
+        buy_count = 0
+        sell_count = 0
+        comiss_sum = 0
+        tax_sum = 0
         data_list = []
 
         in_data_copy = in_data.copy()
         cache = in_data_copy[0]
         open_price = in_data_copy[1]
         close_price = in_data_copy[2]
+        comission = in_data_copy[3]
+        tax = in_data_copy[4]
 
         for row in data:
             try:
                 # если цена соответствует покупке:
                 if row[2] <= open_price and cache >= row[2]:
                     count = cache // open_price
-                    cache = cache - count * open_price
+                    comiss_tmp = count * open_price * comission
+                    # если сумма сделки + комиссия > кэша
+                    if cache < count * open_price + comiss_tmp:
+                        count -= 1
+                        comiss_tmp = count * open_price * comission
+                    comiss_sum += comiss_tmp
+                    cache = cache - count * open_price - comiss_sum
                     share_count += count
+                    buy_count += 1
                 # если цена соответствует продаже
                 if row[1] >= close_price and share_count > 0:
-                    cache = cache + share_count * row[1]
+                    comiss_tmp = share_count * row[1] * comission
+                    cache = cache + share_count * row[1] - comiss_tmp
                     share_count = 0
+                    sell_count += 1
+                    comiss_sum += comiss_tmp
+                cache = round(cache, 2)
+                comiss_sum = round(comiss_sum, 2)
                 amount_in_shares = round(share_count * row[3], 2)
                 overall_result = round(amount_in_shares + cache, 2)
                 data_list.append([row[0], row[1], row[2], cache,
                                   share_count, amount_in_shares,
-                                  overall_result])
+                                  overall_result, comiss_sum, tax_sum])
             except KeyError as e:
                 logging.error("Столбец %s не найден в строке: %s", e, row)
-        return data_list
+        counting_transactions = [buy_count, sell_count]
+        return data_list, counting_transactions
 
     except Exception as e:
         logging.error("Произошла общая ошибка: %s", e)
         return None
 
 
-def calculates_results(data: list, in_data: list,
+def calculates_results(data: list, transactions: list, in_data: list,
                        output_filepath: str) -> None:
     """ Рассчитывает финансовые результаты стратегии,
     выгружает в json
@@ -133,33 +154,42 @@ def calculates_results(data: list, in_data: list,
     Args:
         data: Список списков [дата, макс.цена, мин.цена, кэш, кол-во акций,
             стоимость акций, общий результат].
+        transaction_list: .
+        in_data: .
         output_filepath: Путь к создаваемому файлу.
 
     Variables:
+        start_date: Дата начала инвестирования.
+        end_date: Дата завершения инвестрирования.
         invest_period_day: Период инвестирования в днях.
         invest_period_years: Период инвестирования в годах.
         total_income_sum: Суммарный доход сумма.
         total_income_perc: Суммарный доход в процентах.
         incom_year_sum: Средний доход в год в сумме.
         incom_year_pers: Средний доход в год в процентах.
-
     """
 
     try:
+        start_date = datetime.strptime(data[0][0], '%Y-%m-%d')
+        end_date = datetime.strptime(data[-1][0], '%Y-%m-%d')
 
-        invest_period_days = len(data)
-        invest_period_years = round(len(data) / 365, 1)
+        invest_period_days = (end_date - start_date).days
+        invest_period_years = round(invest_period_days / 365, 2)
 
         total_income_sum = round((data[0][6] - data[-1][6]), 2) * -1
         total_income_perc = round(data[-1][6] / data[0][6] * 100, 2)
 
-        incom_year_sum = total_income_sum / round(len(data) / 365, 1)
+        incom_year_sum = round(total_income_sum / invest_period_years, 2)
         incom_year_pers = round(total_income_perc / invest_period_years, 2)
 
         results = {
+                "start_date": start_date.strftime('%Y-%m-%d'),
+                "end_date": end_date.strftime('%Y-%m-%d'),
                 "initial_cache": in_data[0],
                 "open_price": in_data[1],
                 "close_price": in_data[2],
+                "buy_count": transactions[0],
+                "sell_count": transactions[1],
                 "comission_percent": in_data[3],
                 "tax_percent": in_data[4],
                 "invest_period_days": invest_period_days,
@@ -174,9 +204,11 @@ def calculates_results(data: list, in_data: list,
             json.dump(results, f, indent=4, ensure_ascii=False)
 
     except (ValueError, TypeError, ZeroDivisionError) as e:
-        raise ValueError("Ошибка при расчете или записи результатов: ") from e
+        logging.exception("Ошибка при расчете или записи результатов: %s", e)
+        raise
     except IOError as e:
-        raise IOError("Ошибка при работе с файлом: ") from e
+        logging.exception("Ошибка при работе с файлом: %s", e)
+        raise
 
 
 def save_to_csv(data: list, columns: list, filename: str) -> None:
@@ -188,6 +220,7 @@ def save_to_csv(data: list, columns: list, filename: str) -> None:
         columns: Список названий столбцов.
         filename: Имя сохраняемого файла
     """
+
     try:
         with open(filename, 'w', newline='', encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
@@ -204,5 +237,5 @@ def save_to_csv(data: list, columns: list, filename: str) -> None:
 
 df_list = read_csv_with_header(FILEPATH)
 df_data = calculates_data(df_list, input_data)
-save_to_csv(df_data, COLUMNS, FILEPATH_TO_FINISH_DATA)
-calculates_results(df_data, input_data, FILEPATH_TO_JSON)
+save_to_csv(df_data[0], COLUMNS, FILEPATH_TO_FINISH_DATA)
+calculates_results(df_data[0], df_data[1], input_data, FILEPATH_TO_JSON)
