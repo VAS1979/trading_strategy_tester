@@ -4,14 +4,15 @@
     "initial_cache": 400000,
     "open_price": 215,
     "close_price": 300,
-    "buy_count": 4,
+    "buy_count": 3,
     "sell_count": 2,
     "comission_percent": 0.00035,
     "tax_percent": 0.13,
     "invest_period_days": 4009,
     "invest_period_years": 10.98,
-    "total_income_sum": 375192.42,
-    "total_income_perc": 193.8,
-    "incom_year_sum": 34170.53,
-    "incom_year_pers": 17.65
+    "total_income_sum": 330265.68,
+    "total_income_perc": 182.57,
+    "incom_year_sum": 30078.84,
+    "incom_year_pers": 16.63,
+    "accumulated_commission": 1074.32
 }

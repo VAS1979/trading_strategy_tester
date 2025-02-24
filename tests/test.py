@@ -106,26 +106,28 @@ def calculates_data(data: list, in_data: list) -> list:
         open_price = in_data_copy[1]
         close_price = in_data_copy[2]
         comission = in_data_copy[3]
-        tax = in_data_copy[4]
+        # tax = in_data_copy[4]
 
         for row in data:
             try:
                 # если цена соответствует покупке:
-                if row[2] <= open_price and cache >= row[2]:
-                    count = cache // open_price
+                if cache >= open_price >= row[2]:
+                    count = int(cache // open_price)
                     comiss_tmp = count * open_price * comission
                     # если сумма сделки + комиссия > кэша
                     if cache < count * open_price + comiss_tmp:
                         count -= 1
                         comiss_tmp = count * open_price * comission
                     comiss_sum += comiss_tmp
-                    cache = cache - count * open_price - comiss_sum
+                    cache = cache - count * open_price - comiss_tmp
+                    print("buy", share_count, cache, open_price, comission, comiss_tmp)
                     share_count += count
                     buy_count += 1
                 # если цена соответствует продаже
                 if row[1] >= close_price and share_count > 0:
-                    comiss_tmp = share_count * row[1] * comission
-                    cache = cache + share_count * row[1] - comiss_tmp
+                    comiss_tmp = share_count * close_price * comission
+                    cache = cache + share_count * close_price - comiss_tmp
+                    print("sell", share_count, cache, close_price, comission, comiss_tmp)
                     share_count = 0
                     sell_count += 1
                     comiss_sum += comiss_tmp
@@ -153,9 +155,12 @@ def calculates_results(data: list, transactions: list, in_data: list,
 
     Args:
         data: Список списков [дата, макс.цена, мин.цена, кэш, кол-во акций,
-            стоимость акций, общий результат].
-        transaction_list: .
-        in_data: .
+            стоимость акций, общий результат, комиссия по нарастающей,
+            налог по нарастающей].
+        transaction: Список сделок [кол-во покупок, кол-во продаж].
+        in_data: Список задаваемых пользователем данных [стартовая сумма, цена
+            для покупки, цена для продажи, процент комиссии брокера,
+            процент налога].
         output_filepath: Путь к создаваемому файлу.
 
     Variables:
@@ -167,6 +172,7 @@ def calculates_results(data: list, transactions: list, in_data: list,
         total_income_perc: Суммарный доход в процентах.
         incom_year_sum: Средний доход в год в сумме.
         incom_year_pers: Средний доход в год в процентах.
+        accumulated_commission: Накопленная сумма комиссии за весь период.
     """
 
     try:
@@ -181,6 +187,8 @@ def calculates_results(data: list, transactions: list, in_data: list,
 
         incom_year_sum = round(total_income_sum / invest_period_years, 2)
         incom_year_pers = round(total_income_perc / invest_period_years, 2)
+
+        accumulated_commission = data[-1][7]
 
         results = {
                 "start_date": start_date.strftime('%Y-%m-%d'),
@@ -198,6 +206,7 @@ def calculates_results(data: list, transactions: list, in_data: list,
                 "total_income_perc": total_income_perc,
                 "incom_year_sum": incom_year_sum,
                 "incom_year_pers": incom_year_pers,
+                "accumulated_commission": accumulated_commission
             }
 
         with open(output_filepath, 'w', encoding='utf-8') as f:
