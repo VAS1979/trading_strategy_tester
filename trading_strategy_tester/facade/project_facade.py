@@ -67,7 +67,7 @@ def run_trading_strategy(
 COLUMNS = ['date', 'high', 'low', 'cache', 'share_count', 'amount_in_shares',
            'overall_result', 'comission', 'tax', 'total_tax']
 # Путь к сформированному отчету
-FILEPATH_TO_FINISH_DATA = "database/processed_data/MTSS"
+FILEPATH_TO_FINISH_DATA = "database"
 
 parameters = StrategyParameters(
         initial_cache=400000,

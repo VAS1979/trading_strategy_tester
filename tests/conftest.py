@@ -1,4 +1,4 @@
-""" Содержит фикстуры для тестов """
+""" Содержит фикстуры для тестов. """
 
 import pytest
 from trading_strategy_tester.models.trading_data import TradingData

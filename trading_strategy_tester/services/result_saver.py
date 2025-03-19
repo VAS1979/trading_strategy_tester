@@ -1,9 +1,9 @@
-""" Содержит класс для сохранения результатов вычислений. """
+""" Содержит класс для сохранения результатов вычислений стратегии. """
 
 import csv
 import json
-import pandas as pd
 from typing import Dict, List
+import pandas as pd
 
 from trading_strategy_tester.models.trading_result import TradingResult
 from trading_strategy_tester.utils.logger import logging
@@ -17,14 +17,14 @@ class ResultSaver:
     """
 
     def saves_result_to_csv(self, data: List[TradingResult],
-                            columns: List[str], filename: str) -> None:
+                            columns: List[str], directory: str) -> None:
         """
         Сохраняет результаты в CSV-файл.
 
         Args:
             data (List[TradingResult]): Данные для сохранения.
             columns (List[str]): Заголовки столбцов.
-            filename (str): Путь к файлу.
+            directory (str): Путь к файлу.
         """
 
         if data is None:
@@ -32,35 +32,35 @@ class ResultSaver:
             return
 
         try:
-            filename = filename + ".csv"
-            with open(filename, 'w', newline='', encoding="utf-8") as csvfile:
+            directory = directory + "/processed_data_csv/MTSS.csv"
+            with open(directory, 'w', newline='', encoding="utf-8") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(columns)
                 writer.writerows([list(row.__dict__.values()) for row in data])
                 logger.info("Сохранение итоговых результатов в "
-                            "файл %s", filename)
+                            "файл %s", directory)
         except IOError as e:
-            logger.error("Ошибка записи в файл %s: %s", filename, e)
+            logger.error("Ошибка записи в файл %s: %s", directory, e)
             raise
         except Exception as e:
             logger.exception("Непредвиденная ошибка при"
-                             "сохранении в файл %s: %s", filename, e)
+                             "сохранении в файл %s: %s", directory, e)
             raise
 
     def saves_result_to_json(self, results: Dict[str, any],
-                             filename: str) -> None:
+                             directory: str) -> None:
         """
         Сохраняет результаты в JSON-файл.
 
         Args:
             results (Dict[str, any]): Словарь с результатами.
-            filename (str): Имя файла для сохранения (без расширения).
+            directory (str): Имя файла для сохранения (без расширения).
         """
         try:
-            filename = filename + ".json"
-            with open(filename, 'w', encoding='utf-8') as f:
+            directory = directory + "/processed_data_json/MTSS.json"
+            with open(directory, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=4, ensure_ascii=False)
-            logger.info("Результаты успешно сохранены в файл %s.", filename)
+            logger.info("Результаты успешно сохранены в файл %s.", directory)
         except IOError as e:
             logger.exception("Ошибка при записи в файл: %s", e)
             raise
@@ -72,7 +72,7 @@ class ResultSaver:
         Args:
             df (pd.DataFrame): DataFrame с данными.
             columns (List[str]): Заголовки столбцов.
-            filename (str): Путь к файлу.
+            directory (str): Путь к файлу.
         """
         if df is None or df.empty:
             logger.error("Нет данных для сохранения.")
