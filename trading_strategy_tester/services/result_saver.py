@@ -17,7 +17,8 @@ class ResultSaver:
     """
 
     def saves_result_to_csv(self, data: List[TradingResult],
-                            columns: List[str], directory: str) -> None:
+                            columns: List[str], directory: str,
+                            ticker: str) -> None:
         """
         Сохраняет результаты в CSV-файл.
 
@@ -32,7 +33,7 @@ class ResultSaver:
             return
 
         try:
-            directory = directory + "/processed_data_csv/MTSS.csv"
+            directory = directory + f"/processed_data_csv/{ticker}.csv"
             with open(directory, 'w', newline='', encoding="utf-8") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(columns)
@@ -48,7 +49,7 @@ class ResultSaver:
             raise
 
     def saves_result_to_json(self, results: Dict[str, any],
-                             directory: str) -> None:
+                             directory: str, ticker: str) -> None:
         """
         Сохраняет результаты в JSON-файл.
 
@@ -57,7 +58,7 @@ class ResultSaver:
             directory (str): Имя файла для сохранения (без расширения).
         """
         try:
-            directory = directory + "/processed_data_json/MTSS.json"
+            directory = directory + f"/processed_data_json/{ticker}.json"
             with open(directory, 'w', encoding='utf-8') as f:
                 json.dump(results, f, indent=4, ensure_ascii=False)
             logger.info("Результаты успешно сохранены в файл %s.", directory)

@@ -4,8 +4,7 @@
 from trading_strategy_tester.services.result_saver import ResultSaver
 from trading_strategy_tester.utils.logger import logging
 from trading_strategy_tester.services.data_parser import DataframeParser
-from trading_strategy_tester.models.request_parameters import (
-    RequestParameters)
+from trading_strategy_tester.api.schemas import RequestParameters
 
 logger = logging.getLogger(__name__)
 
@@ -26,13 +25,5 @@ def run_parsing(param: RequestParameters, filepath: str) -> None:
     saver = ResultSaver()
     saver.saves_dataframe_to_csv(data, filepath)
 
-
-parameters = RequestParameters(
-    ticker="MTSS",
-    start="2014-01-01",
-    end="2024-12-28"
-)
-
-DIRECTORY = "database/dataframe_history/MTSS.csv"
-
-run_parsing(parameters, DIRECTORY)
+    result = f"Исторические данные {param.ticker} успешно загружены."
+    return result

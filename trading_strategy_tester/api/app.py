@@ -1,8 +1,10 @@
 """ Точка входа в приложение """
 
+from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from trading_strategy_tester.api.routers import router
@@ -10,11 +12,17 @@ from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+STATIC_DIR = BASE_DIR / "static"
+
 app = FastAPI(
     title="Trading Strategy Tester",
     description="API для тестирования торговых стратегий.",
     version="1.0.0"
 )
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 app.include_router(router)
 
 

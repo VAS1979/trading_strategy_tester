@@ -1,0 +1,22 @@
+{
+    "start_date": "2018-01-03",
+    "end_date": "2025-03-21",
+    "initial_cache": 400000.0,
+    "buy_price": 4600.0,
+    "sell_price": 5600.0,
+    "buy_count": 4,
+    "sell_count": 4,
+    "comission_percent": 0.00035,
+    "tax_percent": 0.13,
+    "invest_period_days": 2634,
+    "invest_period_years": 7.22,
+    "total_income_sum": 499180.83,
+    "total_income_perc": 267.22,
+    "incom_year_sum": 69138.62,
+    "incom_year_pers": 37.01,
+    "accumulated_commission": 1638.63,
+    "final_cache": 797691.37,
+    "final_amount_in_shares": 0.0,
+    "final_overall_result": 797691.37,
+    "total_tax": 59670.0
+}

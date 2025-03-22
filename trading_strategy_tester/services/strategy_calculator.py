@@ -5,8 +5,7 @@ from datetime import datetime
 from typing import List, Tuple
 from trading_strategy_tester.models.trading_data import TradingData
 from trading_strategy_tester.models.trading_result import TradingResult
-from trading_strategy_tester.models.strategy_parameters import (
-    StrategyParameters)
+from trading_strategy_tester.api.schemas import StrategyParameters
 from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
