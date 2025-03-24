@@ -18,7 +18,7 @@ const translations = {
     "incom_year_sum": "Доход в год (сумма)",
     "incom_year_pers": "Доход в год (%)",
     "accumulated_commission": "Накопленная комиссия",
-    "final_cache": "Финальный капитал",
+    "final_cache": "Финальная сумма в кэше",
     "final_amount_in_shares": "Финальная сумма в акциях",
     "final_overall_result": "Общий финальный результат",
     "total_tax": "Общий налог"
@@ -81,7 +81,18 @@ document.getElementById('generate-report-form').addEventListener('submit', async
 
         // Значение параметра
         const valueCell = document.createElement('td');
-        valueCell.textContent = typeof value === 'number' ? value.toLocaleString() : value;
+        if (typeof value === 'number') {
+            // Для comission_percent используем toFixed(5)
+            if (key === 'comission_percent') {
+                valueCell.textContent = value.toFixed(5);
+            } else {
+                // Для остальных чисел используем toLocaleString()
+                valueCell.textContent = value.toLocaleString();
+            }
+        } else {
+            // Для нечисловых значений выводим как есть
+            valueCell.textContent = value;
+        }
         row.appendChild(valueCell);
 
         table.appendChild(row);

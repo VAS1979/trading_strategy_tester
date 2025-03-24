@@ -67,4 +67,5 @@ async def generate_report(
         tax_rate=tax_rate
     )
     success = run_trading_strategy(ticker, parameters)
+    print(success)
     return {"success": success}

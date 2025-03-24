@@ -10,7 +10,7 @@ class RequestParameters(BaseModel):
     Атрибуты:
         ticker (str): Тикер акции.
         start (str): Начальная дата запроса истории торгов.
-        end (str): Конечеая дата запроса истории торгов.
+        end (str): Конечная дата запроса истории торгов.
     """
 
     ticker: str
