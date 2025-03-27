@@ -9,12 +9,12 @@ from trading_strategy_tester.api.schemas import RequestParameters
 logger = logging.getLogger(__name__)
 
 
-def run_parsing(param: RequestParameters, filepath: str) -> None:
+def run_parsing(param: RequestParameters, ticker: str) -> None:
     """ Запускает парсер и сохраняет результат в CSV файл.
 
     Args:
         param (RequestParameters): Параметры запроса.
-        filepath (str): Путь сохранения CSV-файла.
+        ticker (str): Наименование акции.
     """
 
     # Запрос датафрэйма
@@ -23,7 +23,7 @@ def run_parsing(param: RequestParameters, filepath: str) -> None:
 
     # Сохранение в файл
     saver = ResultSaver()
-    saver.saves_dataframe_to_csv(data, filepath)
+    saver.saves_dataframe_to_csv(data, ticker)
 
     result = f"Исторические данные {param.ticker} успешно загружены."
     return result

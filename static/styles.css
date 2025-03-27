@@ -1,4 +1,83 @@
 /* styles.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1;
+    color: #333;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0 1.5% 0 1.5%; /* Отступы в процентах */
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.page-header {
+    max-width: 96%;  /* Синхронизация с шириной wrapper */
+    margin: 0 auto;  /* Центрирование и отступ снизу */
+    padding: 0 0 0 0; /* Только нижний отступ (0.3% для линии) */
+    border-bottom: 0.1vw solid #eee;
+    text-align: center;
+    margin-top: 0;
+}
+
+#wrapper {
+    width: 96%; /* Ширина относительно окна */
+    max-width: 98vw; /* Максимальная ширина */
+    margin: 0 auto;
+    background: white;
+    padding: 0 1.5% 0 1.5%; /* Относительные отступы */
+    border-radius: 1vw; /* Адаптивные скругления */
+    box-shadow: 0 0 1.5vw rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 48% 48%; /* Две почти равные колонки */
+    gap: 4%; /* Пространство между колонками */
+    align-items: start;
+}
+
+#parameters {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh; /* Вертикальные отступы относительно высоты экрана */
+}
+
+#report-block {
+    grid-column: 2;
+    height: auto;
+    min-height: 60vh; /* Минимальная высота */
+    position: sticky;
+    top: 2%;
+}
+
+/* Стили блока для ввода параметров */
+form {
+    background: #f9f9f9;
+    padding: 1.5%;
+    border-radius: 1vw;
+    border: 0.1vw solid #e0e0e0;
+    margin-bottom: 3%;
+}
+
+/* Стили для кнопки отправки формы */
+button[type="submit"] {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0 1.5% 0 1.5%;
+    border-radius: 0.5vw;
+    cursor: pointer;
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    transition: all 0.3s;
+    width: 36%;
+    font-weight: 600;
+    margin-top: 2%;
+}
+
+/* Стили для кнопки при наведении курсора */
+button[type="submit"]:hover {
+    background: #2980b9;
+    transform: translateY(-0.1vw);
+}
+
 table {
     width: auto;
     border-collapse: collapse;

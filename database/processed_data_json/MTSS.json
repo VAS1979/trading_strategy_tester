@@ -1,9 +1,9 @@
 {
-    "start_date": "2025-02-27",
-    "end_date": "2025-03-24",
-    "initial_cache": 78.99,
-    "buy_price": 225.88,
-    "sell_price": 260.99,
+    "start_date": "2025-03-01",
+    "end_date": "2025-03-26",
+    "initial_cache": 400000.0,
+    "buy_price": 215.0,
+    "sell_price": 260.0,
     "buy_count": 0,
     "sell_count": 0,
     "comission_percent": 0.00035,
@@ -15,8 +15,8 @@
     "incom_year_sum": -0.0,
     "incom_year_pers": 1428.57,
     "accumulated_commission": 0,
-    "final_cache": 78.99,
+    "final_cache": 400000.0,
     "final_amount_in_shares": 0.0,
-    "final_overall_result": 78.99,
+    "final_overall_result": 400000.0,
     "total_tax": 0
 }

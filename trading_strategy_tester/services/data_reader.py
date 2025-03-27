@@ -1,6 +1,7 @@
 """ Содержит класс для чтения данных из CSV-файла,
 сформированного парсером. """
 
+from pathlib import Path
 import csv
 from typing import List, Optional
 from trading_strategy_tester.models.trading_data import TradingData
@@ -15,21 +16,23 @@ class DataReader:
     сформированного парсером.
     """
 
-    def __init__(self, filepath: str):
+    def __init__(self, ticker: str):
         """
         Инициализация класса DataReader.
 
         Args:
-            filepath (str): Путь к CSV-файлу.
-             Считываемый csv файл имеет колонки:
-            (open, close, high, low, value, volume, begin, end).
+            ticker (str): Наименование тикера акции.
         """
+        path_dir = Path.cwd() / "database" / "dataframe_history"
+        csv_file = f"{ticker}.csv"
+        filepath = path_dir / csv_file
         self.filepath = filepath
 
     def read_csv_with_header(self) -> Optional[List[TradingData]]:
         """
         Считывает CSV-файл с историческими данными и возвращает
-        список объектов TradingData.
+        список объектов TradingData. Считываемый csv файл имеет колонки:
+            (open, close, high, low, value, volume, begin, end).
 
         Variables:
         data_list: Список для сохраняемых.

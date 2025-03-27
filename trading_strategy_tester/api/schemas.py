@@ -1,4 +1,4 @@
-" . "
+" Содержит модели Pydantic"
 
 from pydantic import BaseModel
 

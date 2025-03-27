@@ -3,5 +3,5 @@
 .env
 testing
 *venv
-.log
+*.log
 *.db

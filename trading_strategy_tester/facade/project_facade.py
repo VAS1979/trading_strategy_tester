@@ -35,14 +35,8 @@ def run_trading_strategy(
                'amount_in_shares', 'overall_result', 'comission',
                'tax', 'total_tax']
 
-    # Путь к папке данными.
-    output_path = "database"
-
-    # Инициализация DataReader
-    filepath = f"database/dataframe_history/{ticker}.csv"
-    data_reader = DataReader(filepath=filepath)
-
     # Чтение данных
+    data_reader = DataReader(ticker)
     data = data_reader.read_csv_with_header()
     if data is None:
         raise ValueError("Не удалось загрузить данные из CSV.")
@@ -57,11 +51,11 @@ def run_trading_strategy(
     if not results:
         logger.warning("Нет данных для сохранения.")
     else:
-        save_result.saves_result_to_csv(results, columns, output_path, ticker)
+        save_result.saves_result_to_csv(results, columns, ticker)
 
     calc_result = CalculateResult()
     final_result = calc_result.calculates_results(results, param, transactions)
 
-    save_result.saves_result_to_json(final_result, output_path, ticker)
+    save_result.saves_result_to_json(final_result, ticker)
 
     return final_result

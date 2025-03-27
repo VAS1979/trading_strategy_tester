@@ -40,8 +40,8 @@ async def fetch_data(
         start=start,
         end=end
     )
-    filepath = f"database/dataframe_history/{ticker}.csv"
-    success = run_parsing(parameters, filepath)
+    ticker = ticker.upper()
+    success = run_parsing(parameters, ticker)
     return {"success": success}
 
 
@@ -66,6 +66,7 @@ async def generate_report(
         commission_rate=commission_rate,
         tax_rate=tax_rate
     )
+    ticker = ticker.upper()
     success = run_trading_strategy(ticker, parameters)
     print(success)
     return {"success": success}
