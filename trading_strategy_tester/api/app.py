@@ -54,8 +54,5 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 if __name__ == "__main__":
-    try:
-        logger.info("Запуск сервера Uvicorn")
-        uvicorn.run(app, host="127.0.0.1", port=8080)
-    except Exception as e:
-        logger.exception("Ошибка запуска Uvicorn сервера: %s", e)
+    logger.info("Запуск сервера Uvicorn")
+    uvicorn.run(app, host="127.0.0.1", port=8080)
