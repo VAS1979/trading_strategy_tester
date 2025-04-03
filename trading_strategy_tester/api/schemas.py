@@ -1,5 +1,6 @@
 " Содержит модели Pydantic"
 
+from decimal import Decimal
 from pydantic import BaseModel
 
 
@@ -23,16 +24,16 @@ class StrategyParameters(BaseModel):
     Модель для входных данных торговой стратегии.
 
     Атрибуты:
-        initial_cache (float): Сумма кэша на начало стратегии.
-        buy_price (float): Цена покупки акций.
-        sell_price (float): Цена продажи акций.
-        commission_rate (float): Процентая ставка комиссии брокера.
-        tax_rate (float): Налоговая ставка.
+        initial_cache (Decimal): Сумма кэша на начало стратегии.
+        buy_price (Decimal): Цена покупки акций.
+        sell_price (Decimal): Цена продажи акций.
+        commission_rate (Decimal): Процентая ставка комиссии брокера.
+        tax_rate (Decimal): Налоговая ставка.
     """
 
     ticker: str
-    initial_cache: float
-    buy_price: float
-    sell_price: float
-    commission_rate: float
-    tax_rate: float
+    initial_cache: Decimal
+    buy_price: Decimal
+    sell_price: Decimal
+    commission_rate: Decimal
+    tax_rate: Decimal

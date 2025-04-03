@@ -1,13 +1,13 @@
 """ Маршруты FastAPI """
 
+from decimal import Decimal
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from trading_strategy_tester.api.schemas import (RequestParameters,
                                                  StrategyParameters)
-from trading_strategy_tester.facade.parsing_facade import run_parsing
-from trading_strategy_tester.facade.project_facade import run_trading_strategy
+from trading_strategy_tester.services.facade import Facade
 from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
@@ -40,19 +40,18 @@ async def fetch_data(
         start=start,
         end=end
     )
-    ticker = ticker.upper()
-    success = run_parsing(parameters, ticker)
+    success = Facade.run_parsing(parameters)
     return {"success": success}
 
 
 @router.post("/api/generate-report")
 async def generate_report(
     ticker: str = Form(...),
-    initial_cache: float = Form(...),
-    buy_price: float = Form(...),
-    sell_price: float = Form(...),
-    commission_rate: float = Form(...),
-    tax_rate: float = Form(...)
+    initial_cache: str = Form(...),
+    buy_price: str = Form(...),
+    sell_price: str = Form(...),
+    commission_rate: str = Form(...),
+    tax_rate: str = Form(...)
 ):
     """
     Запускает торговую стратегию.
@@ -60,13 +59,11 @@ async def generate_report(
 
     parameters = StrategyParameters(
         ticker=ticker,
-        initial_cache=initial_cache,
-        buy_price=buy_price,
-        sell_price=sell_price,
-        commission_rate=commission_rate,
-        tax_rate=tax_rate
+        initial_cache=Decimal(initial_cache),
+        buy_price=Decimal(buy_price),
+        sell_price=Decimal(sell_price),
+        commission_rate=Decimal(commission_rate),
+        tax_rate=Decimal(tax_rate)
     )
-    ticker = ticker.upper()
-    success = run_trading_strategy(ticker, parameters)
-    print(success)
+    success = Facade.run_trading_strategy(parameters)
     return {"success": success}

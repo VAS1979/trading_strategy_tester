@@ -3,6 +3,7 @@
 
 from datetime import datetime
 from typing import Dict, List
+from decimal import Decimal, ROUND_HALF_EVEN, getcontext
 from trading_strategy_tester.api.schemas import StrategyParameters
 from trading_strategy_tester.models.trading_result import TradingResult
 from trading_strategy_tester.utils.logger import logging
@@ -13,12 +14,28 @@ logger = logging.getLogger(__name__)
 class CalculateResult:
     """ Класс, для рассчита итогов финансовых результатов стратегии."""
 
+    def __init__(self):
+        """Инициализация точности вычислений."""
+        getcontext().prec = 8
+
+    @classmethod
+    def round_money(cls, value: Decimal) -> Decimal:
+        """Унифицированное округление денежных величин
+        с банковским округлением.
+        """
+
+        return value.quantize(Decimal("1.00"), ROUND_HALF_EVEN)
+
     def calculates_results(self, data: List[TradingResult],
                            param: StrategyParameters,
                            transactions: List[int]) -> Dict[str, any]:
         """ Рассчитывает итоговые финансовые результаты стратегии.
 
         Args:
+            data (List[TradingResult]): Список данных результатов торговой
+                стратегии на конкретную дату.
+            param StrategyParameters: Параметры стратегии.
+            transactions: List[int]: Количество сделок.
 
         Variables:
             start_date: Дата начала инвестирования.
@@ -44,19 +61,26 @@ class CalculateResult:
         """
 
         try:
+            # Преобразование дат
             start_date = datetime.strptime(data[0].date_str, '%Y-%m-%d')
             end_date = datetime.strptime(data[-1].date_str, '%Y-%m-%d')
 
-            invest_period_days = (end_date - start_date).days
-            invest_period_years = round(invest_period_days / 365, 2)
+            # Расчет периода инвестирования
+            invest_period_days = Decimal((end_date - start_date).days)
+            invest_period_years = self.round_money(invest_period_days / 365)
 
-            total_income_sum = round((data[0].overall_result -
-                                      data[-1].overall_result), 2) * -1
-            total_income_perc = round(data[-1].overall_result /
-                                      data[0].overall_result * 100, 2)
+            # Расчет доходности
+            initial_result = Decimal(str(data[0].overall_result))
+            final_result = Decimal(str(data[-1].overall_result))
+            total_income_sum = self.round_money(final_result - initial_result)
+            total_income_perc = self.round_money(
+                ((final_result - initial_result) / initial_result * 100))
 
-            incom_year_sum = round(total_income_sum / invest_period_years, 2)
-            incom_year_pers = round(total_income_perc / invest_period_years, 2)
+            # Годовая доходность
+            incom_year_sum = self.round_money(
+                total_income_sum / invest_period_years)
+            incom_year_pers = self.round_money(
+                total_income_perc / invest_period_years)
 
             accumulated_commission = data[-1].comiss_sum
             total_tax = data[-1].total_tax
