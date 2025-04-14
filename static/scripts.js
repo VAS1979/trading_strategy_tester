@@ -101,3 +101,125 @@ document.getElementById('generate-report-form').addEventListener('submit', async
     // Добавляем таблицу в контейнер
     reportElement.appendChild(table);
 });
+
+document.getElementById('show-history-btn').addEventListener('click', function() {
+    const ticker = document.getElementById('report-ticker').value.trim();
+    
+    if (!ticker) {
+        alert('Пожалуйста, введите тикер');
+        return;
+    }
+
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Загрузка...';
+
+    fetch('/api/show-history', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `ticker=${encodeURIComponent(ticker)}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка сети');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>История торгов: ${data.ticker}</title>
+                    <link rel="stylesheet" href="styles.css">
+                    <style>
+                        .trading-results {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 10px;
+                        }
+                        .trading-results th {
+                            background-color: #f2f2f2;
+                            padding: 10px;
+                            text-align: left;
+                            position: sticky;
+                            top: 0;
+                            white-space: normal;
+                            height: 60px;
+                            vertical-align: bottom;
+                        }
+                        .trading-results th span {
+                            display: inline-block;
+                            max-width: 100%;
+                            word-break: break-word;
+                            line-height: 1.3;
+                        }
+                        .trading-results td {
+                            padding: 8px 10px;
+                            border-bottom: 1px solid #ddd;
+                        }
+                        .numeric {
+                            text-align: right;
+                            font-family: 'Courier New', monospace;
+                        }
+                        tr.increase {
+                            background-color:rgb(58, 209, 58) !important; /* Светло-зеленый */
+                        }
+                        tr.decrease {
+                            background-color:rgb(228, 71, 71) !important; /* Светло-красный */
+                        }
+                        tr:hover {
+                            background-color: #f5f5f5;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Результаты стратегии: ${data.ticker}</h2>
+                    <script>
+                        function highlightQuantityChanges() {
+                            const rows = document.querySelectorAll('.trading-results tr:not(:first-child)');
+                            let prevQuantity = null;
+                            
+                            rows.forEach(row => {
+                                const cells = row.querySelectorAll('td');
+                                if (cells.length > 4) { // Проверяем, что есть 5-я колонка
+                                    const quantityCell = cells[4]; // 5-я колонка с количеством акций
+                                    const quantityText = quantityCell.textContent.trim().replace(/\s+/g, '');
+                                    const currentQuantity = parseInt(quantityText) || 0;
+                                    
+                                    if (prevQuantity !== null) {
+                                        if (currentQuantity > prevQuantity) {
+                                            row.classList.add('increase');
+                                        } else if (currentQuantity < prevQuantity) {
+                                            row.classList.add('decrease');
+                                        }
+                                    }
+                                    prevQuantity = currentQuantity;
+                                }
+                            });
+                        }
+                        
+                        document.addEventListener('DOMContentLoaded', highlightQuantityChanges);
+                    </script>
+                    ${data.html_table.replace(/<th([^>]*)>([^<]*)<\/th>/g, '<th$1><span>$2</span></th>')}
+                </body>
+                </html>
+            `);
+            win.document.close();
+        } else {
+            alert(data.error || 'Не удалось загрузить историю');
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Произошла ошибка при загрузке данных');
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Показать историю';
+    });
+});

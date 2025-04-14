@@ -8,70 +8,71 @@
 </head>
 <body>
     <header class="page-header">  <!-- Отдельный блок перед wrapper -->
-        <h1>Trading Strategy Tester</h1>
+        <h1>Анализатор торговых стратегий</h1>
     </header>
     <div id="wrapper">       
         <div id="parameters">
             <!-- Форма для запроса данных -->
-            <h2>Fetch Data</h2>
+            <h2>Запрос исторических данных</h2>
             <form id="fetch-data-form" action="/fetch-data" method="post">
-                <label for="ticker">Ticker:</label>
+                <label for="ticker">Тикер:</label>
                 <input type="text" id="ticker" name="ticker"
                 pattern="[A-Z]+" 
                 title="Только заглавные буквы (без цифр и символов)"
                 required><br><br>
 
-                <label for="start">Start Date:</label>
+                <label for="start">Начальная дата:</label>
                 <input type="date" id="start" name="start"
                 required><br><br>
 
-                <label for="end">End Date:</label>
+                <label for="end">Конечная дата:</label>
                 <input type="date" id="end" name="end" 
                 required><br><br>
 
-                <button type="submit">Fetch Data</button>
+                <button type="submit">Запросить данные</button>
             </form>
 
             <!-- Форма для генерации отчета -->
-            <h2>Generate Report</h2>
+            <h2>Ввод параметров стратегии</h2>
             <form id="generate-report-form" action="/generate-report" method="post">
-                <label for="report-ticker">Ticker:</label>
+                <label for="report-ticker">Тикер:</label>
                 <input type="text" id="report-ticker" name="ticker"
                 pattern="[A-Z]+" 
                 title="Только заглавные буквы (без цифр и символов)"
                 required><br><br>
 
-                <label for="initial_cache">Initial Cache:</label>
+                <label for="initial_cache">Начальная сумма:</label>
                 <input type="text" inputmode="decimal"
                 id="initial_cache" name="initial_cache"
                 required><br><br>
 
-                <label for="buy_price">Buy Price:</label>
+                <label for="buy_price">Цена покупки:</label>
                 <input type="text" inputmode="decimal"
                 id="buy_price" name="buy_price"
                 required><br><br>
 
-                <label for="sell_price">Sell Price:</label>
+                <label for="sell_price">Цена продажи:</label>
                 <input type="text" inputmode="decimal"
                 id="sell_price" name="sell_price"
                 required><br><br>
 
-                <label for="commission_rate">Commission Rate:</label>
+                <label for="commission_rate">Ставка комиссии:</label>
                 <input type="text" inputmode="decimal"
                 id="commission_rate" name="commission_rate"
                 value="0.00035" required><br><br>
 
-                <label for="tax_rate">Tax Rate:</label>
+                <label for="tax_rate">Налоговая ставка:</label>
                 <input type="text" inputmode="decimal"
                 id="tax_rate" name="tax_rate"
                 value="0.13" required><br><br>
 
-                <button type="submit">Generate Report</button>
+                <button type="submit">Сгенерировать отчёт</button>
+                <button type="button" id="show-history-btn">Показать историю</button>
             </form>
         </div>
 
         <div id="report-block">
-            <h2>Report</h2>
+            <h2>Итоговый отчёт</h2>
             <pre id="report"></pre>
         </div>
 

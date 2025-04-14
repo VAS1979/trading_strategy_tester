@@ -9,13 +9,10 @@ from trading_strategy_tester.models.trading_result import TradingResult
 from trading_strategy_tester.services.data_parser import DataframeParser
 from trading_strategy_tester.services.convert_to_decimal import (
     converts_to_decimal)
+from trading_strategy_tester.services.database_gateway import DatabaseGateway
 from trading_strategy_tester.services.strategy_calculator import (
     StrategyCalculator)
 from trading_strategy_tester.services.calculate_results import CalculateResult
-from trading_strategy_tester.database_access.database_saver import (
-    ResultSaver)
-from trading_strategy_tester.database_access.database_loader import (
-    DatabaseLoader)
 from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
@@ -43,7 +40,8 @@ class Facade:
         processed_df = converts_to_decimal(df)
 
         # Сохранение данных парсера в SQL
-        ResultSaver.saves_candles(processed_df, ticker)
+        gateway = DatabaseGateway()
+        gateway.saves_candles(processed_df, ticker)
 
         result = f"Исторические данные {ticker} успешно загружены."
         return result
@@ -64,9 +62,10 @@ class Facade:
         """
 
         ticker = param.ticker.upper()
+        gateway = DatabaseGateway()
 
         # Загрузка истории из базы данных
-        sql_data = DatabaseLoader.load_history_from_db(ticker)
+        sql_data = gateway.load_dataframe_history(ticker)
 
         # Инициализация StrategyCalculator
         strategy_calculator = StrategyCalculator(param)
@@ -80,9 +79,9 @@ class Facade:
                                                       transactions)
 
         # Сохранение результатов стратегии по дням в sql
-        ResultSaver.saves_results(results, ticker)
+        gateway.saves_results(results, ticker)
 
         # Сохранение итоговых рассчетов
-        ResultSaver.saves_calculations(final_result, ticker)
+        gateway.saves_calculations(final_result, ticker)
 
         return final_result

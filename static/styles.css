@@ -78,6 +78,27 @@ button[type="submit"]:hover {
     transform: translateY(-0.1vw);
 }
 
+/* Стили для кнопки "Показать историю" */
+button#show-history-btn {
+    background: #3498db; /* Такой же синий цвет как у submit */
+    color: white;
+    border: none;
+    padding: 0 1.5% 0 1.5%;
+    border-radius: 0.5vw;
+    cursor: pointer;
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    transition: all 0.3s;
+    width: 36%;
+    font-weight: 600;
+    margin-top: 2%;
+}
+
+/* Стиль при наведении - идентичный submit */
+button#show-history-btn:hover {
+    background: #2980b9;
+    transform: translateY(-0.1vw);
+}
+
 table {
     width: auto;
     border-collapse: collapse;

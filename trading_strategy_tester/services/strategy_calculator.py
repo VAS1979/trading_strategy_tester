@@ -186,7 +186,8 @@ class StrategyCalculator:
             last_result.tax_sum = Decimal('0')
 
             counting_transactions = [buy_count, sell_count]
-            logger.info("Рассчет результатов торговой стратегии...")
+            logger.info("Расчет результатов торговой стратегии...")
+
             return data_list, counting_transactions
 
         except Exception as e:
