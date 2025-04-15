@@ -160,6 +160,8 @@ class StrategyCalculator:
                     tax_sum = Decimal('0')
 
                 # Округление результатов
+                max_price = self.round_money(max_price)
+                min_price = self.round_money(min_price)
                 cache = self.round_money(cache)
                 comiss_sum = self.round_money(comiss_sum)
                 amount_in_shares = self.round_money(amount_in_shares)

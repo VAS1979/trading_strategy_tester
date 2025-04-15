@@ -7,8 +7,8 @@ from trading_strategy_tester.api.schemas import StrategyParameters
 from trading_strategy_tester.api.schemas import RequestParameters
 from trading_strategy_tester.models.trading_result import TradingResult
 from trading_strategy_tester.services.data_parser import DataframeParser
-from trading_strategy_tester.services.convert_to_decimal import (
-    converts_to_decimal)
+from trading_strategy_tester.services.convert_df_to_str import (
+    converts_to_str)
 from trading_strategy_tester.services.database_gateway import DatabaseGateway
 from trading_strategy_tester.services.strategy_calculator import (
     StrategyCalculator)
@@ -36,8 +36,8 @@ class Facade:
         parser = DataframeParser(param)
         df = parser.fetch_data()
 
-        # Преобразование DataFrame в список объектов StockCandle с Decimal.
-        processed_df = converts_to_decimal(df)
+        # Преобразование DataFrame в список объектов StockCandle с str.
+        processed_df = converts_to_str(df)
 
         # Сохранение данных парсера в SQL
         gateway = DatabaseGateway()

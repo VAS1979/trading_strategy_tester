@@ -74,12 +74,12 @@ class DatabaseGateway:
                 cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    open INTEGER NOT NULL,
-                    close INTEGER NOT NULL,
-                    high INTEGER NOT NULL,
-                    low INTEGER NOT NULL,
-                    value INTEGER NOT NULL,
-                    volume INTEGER NOT NULL,
+                    open TEXT NOT NULL,
+                    close TEXT NOT NULL,
+                    high TEXT NOT NULL,
+                    low TEXT NOT NULL,
+                    value TEXT NOT NULL,
+                    volume TEXT NOT NULL,
                     begin TIMESTAMP NOT NULL,
                     end TIMESTAMP NOT NULL,
                     UNIQUE(begin, end) ON CONFLICT REPLACE
@@ -97,12 +97,12 @@ class DatabaseGateway:
 
                 for candle in candles:
                     data = (
-                        int(candle.open * 100),
-                        int(candle.close * 100),
-                        int(candle.high * 100),
-                        int(candle.low * 100),
-                        int(candle.value * 100),
-                        int(candle.volume),
+                        str(candle.open),
+                        str(candle.close),
+                        str(candle.high),
+                        str(candle.low),
+                        str(candle.value),
+                        str(candle.volume),
                         candle.begin.to_pydatetime(),
                         candle.end.to_pydatetime()
                     )
@@ -293,11 +293,11 @@ class DatabaseGateway:
 
                 return [
                     StockCandle(
-                        open=Decimal(row[0]) / 100,
-                        close=Decimal(row[1]) / 100,
-                        high=Decimal(row[2]) / 100,
-                        low=Decimal(row[3]) / 100,
-                        value=Decimal(row[4]) / 100,
+                        open=Decimal(row[0]),
+                        close=Decimal(row[1]),
+                        high=Decimal(row[2]),
+                        low=Decimal(row[3]),
+                        value=Decimal(row[4]),
                         volume=Decimal(row[5]),
                         begin=str(row[6]),
                         end=str(row[7])
