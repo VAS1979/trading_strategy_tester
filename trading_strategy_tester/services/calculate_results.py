@@ -80,9 +80,11 @@ class CalculateResult:
 
         # Блок расчета периода инвестирования
         try:
-            invest_period_days = Decimal((end_date - start_date).days)
+            invest_period_days = Decimal((end_date - start_date).days + 1)
             invest_period_years = CalculateResult.round_money(
                 invest_period_days / 365)
+        #    print('invest_period_days', invest_period_days)
+        #    print('invest_period_years', invest_period_years)
             results.update({
                 "invest_period_days": invest_period_days,
                 "invest_period_years": invest_period_years

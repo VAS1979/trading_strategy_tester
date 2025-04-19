@@ -71,6 +71,12 @@ class DatabaseGateway:
             with self.conn:
                 cursor = self.conn.cursor()
 
+                if clear_existing:
+                    # Полное пересоздание таблицы вместо очистки
+                    cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+                    logger.debug("Таблица %s удалена для пересоздания",
+                                 table_name)
+
                 cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,9 +91,6 @@ class DatabaseGateway:
                     UNIQUE(begin, end) ON CONFLICT REPLACE
                 )
                 """)
-
-                if clear_existing:
-                    DatabaseGateway._clear_table(cursor, table_name)
 
                 insert_query = f"""
                 INSERT INTO {table_name}
@@ -119,7 +122,8 @@ class DatabaseGateway:
     def saves_results(self, results: List[TradingResult],
                       ticker: str,
                       clear_existing: bool = True) -> Path:
-        """Сохраняет результаты в базу данных."""
+        """Сохраняет результаты в базу данных с
+        возможностью дублирования дат."""
 
         filepath = DatabaseGateway._get_db_path()
         table_name = f"{ticker.lower()}_results"
@@ -128,10 +132,16 @@ class DatabaseGateway:
             with self.conn:
                 cursor = self.conn.cursor()
 
+                if clear_existing:
+                    # Полное пересоздание таблицы вместо очистки
+                    cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+                    logger.debug("Таблица %s удалена для пересоздания",
+                                 table_name)
+
                 cursor.execute(f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    date_str TEXT NOT NULL UNIQUE ON CONFLICT REPLACE,
+                    date_str TEXT NOT NULL,
                     max_price TEXT NOT NULL,
                     min_price TEXT NOT NULL,
                     cache TEXT NOT NULL,
@@ -143,9 +153,7 @@ class DatabaseGateway:
                     total_tax TEXT NOT NULL
                 )
                 """)
-
-                if clear_existing:
-                    DatabaseGateway._clear_table(cursor, table_name)
+                logger.debug("Таблица %s создана/проверена", table_name)
 
                 insert_query = f"""
                 INSERT INTO {table_name}
