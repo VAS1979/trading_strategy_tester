@@ -33,7 +33,7 @@ document.getElementById('fetch-data-form').addEventListener('submit', async (e) 
         body: formData
     });
     const data = await response.json();
-    alert(data.success ? "Data fetched successfully!" : "Failed to fetch data.");
+    alert(data.success ? "Данные успешно получены" : "Ошибка при получении данных");
 });
 
 // Обработка формы для генерации отчета
