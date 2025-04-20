@@ -1,15 +1,15 @@
 """ Содержит фикстуры для тестов. """
 
 import pytest
+
+from trading_strategy_tester.models.strategy_parameters import StrategyParameters
 from trading_strategy_tester.models.trading_data import TradingData
 from trading_strategy_tester.models.trading_result import TradingResult
-from trading_strategy_tester.models.strategy_parameters import (
-    StrategyParameters)
 
 
 @pytest.fixture
 def sample_csv_data():
-    """ Фикстура, возвращающая CSV-строку с тестовыми данными. """
+    """Фикстура, возвращающая CSV-строку с тестовыми данными."""
 
     return """open,close,high,low,value,volume,begin,end
 322.19,315.02,325.45,313.66,505130903.3,1595690.0,2014-01-06,2014-01-06 23:59:59
@@ -21,11 +21,7 @@ def sample_csv_data():
 def strategy_parameters():
     """Фикстура для создания параметров стратегии."""
     return StrategyParameters(
-        initial_cache=10000.0,
-        buy_price=100.0,
-        sell_price=150.0,
-        commission_rate=0.01,
-        tax_rate=0.13
+        initial_cache=10000.0, buy_price=100.0, sell_price=150.0, commission_rate=0.01, tax_rate=0.13
     )
 
 
@@ -45,26 +41,66 @@ def trading_data():
 def expected_results():
     """Фикстура для создания ожидаемых результатов."""
     return [
-        TradingResult(date_str="2023-01-01", max_price=120.0, min_price=90.0,
-                      cache=8900.0, share_count=10, amount_in_shares=1100.0,
-                      overall_result=10000.0, comiss_sum=100.0, tax_sum=0.0,
-                      total_tax=0.0),
-        TradingResult(date_str="2023-01-02", max_price=130.0, min_price=100.0,
-                      cache=8900.0, share_count=10, amount_in_shares=1200.0,
-                      overall_result=10100.0, comiss_sum=100.0, tax_sum=0.0,
-                      total_tax=0.0),
-        TradingResult(date_str="2023-01-03", max_price=140.0, min_price=110.0,
-                      cache=8900.0, share_count=10, amount_in_shares=1300.0,
-                      overall_result=10200.0, comiss_sum=100.0, tax_sum=0.0,
-                      total_tax=0.0),
-        TradingResult(date_str="2023-01-04", max_price=160.0, min_price=120.0,
-                      cache=10350.0, share_count=0, amount_in_shares=0.0,
-                      overall_result=10350.0, comiss_sum=250.0, tax_sum=65.0,
-                      total_tax=65.0),
-        TradingResult(date_str="2023-01-05", max_price=170.0, min_price=130.0,
-                      cache=10350.0, share_count=0, amount_in_shares=0.0,
-                      overall_result=10350.0, comiss_sum=250.0, tax_sum=0.0,
-                      total_tax=65.0),
+        TradingResult(
+            date_str="2023-01-01",
+            max_price=120.0,
+            min_price=90.0,
+            cache=8900.0,
+            share_count=10,
+            amount_in_shares=1100.0,
+            overall_result=10000.0,
+            comiss_sum=100.0,
+            tax_sum=0.0,
+            total_tax=0.0,
+        ),
+        TradingResult(
+            date_str="2023-01-02",
+            max_price=130.0,
+            min_price=100.0,
+            cache=8900.0,
+            share_count=10,
+            amount_in_shares=1200.0,
+            overall_result=10100.0,
+            comiss_sum=100.0,
+            tax_sum=0.0,
+            total_tax=0.0,
+        ),
+        TradingResult(
+            date_str="2023-01-03",
+            max_price=140.0,
+            min_price=110.0,
+            cache=8900.0,
+            share_count=10,
+            amount_in_shares=1300.0,
+            overall_result=10200.0,
+            comiss_sum=100.0,
+            tax_sum=0.0,
+            total_tax=0.0,
+        ),
+        TradingResult(
+            date_str="2023-01-04",
+            max_price=160.0,
+            min_price=120.0,
+            cache=10350.0,
+            share_count=0,
+            amount_in_shares=0.0,
+            overall_result=10350.0,
+            comiss_sum=250.0,
+            tax_sum=65.0,
+            total_tax=65.0,
+        ),
+        TradingResult(
+            date_str="2023-01-05",
+            max_price=170.0,
+            min_price=130.0,
+            cache=10350.0,
+            share_count=0,
+            amount_in_shares=0.0,
+            overall_result=10350.0,
+            comiss_sum=250.0,
+            tax_sum=0.0,
+            total_tax=65.0,
+        ),
     ]
 
 

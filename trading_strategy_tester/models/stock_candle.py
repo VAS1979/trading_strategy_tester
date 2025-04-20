@@ -2,8 +2,9 @@
 строковым представлением дат """
 
 from dataclasses import dataclass
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
+
 import pandas as pd
 
 
@@ -23,67 +24,39 @@ class StockCandle:
     value: Decimal
     volume: Decimal
     begin: str  # Строка даты в ISO формате
-    end: str    # Строка даты в ISO формате
+    end: str  # Строка даты в ISO формате
 
-    @classmethod
-    def from_pd_timestamp(cls,
-                          open: Decimal,
-                          close: Decimal,
-                          high: Decimal,
-                          low: Decimal,
-                          value: Decimal,
-                          volume: Decimal,
-                          begin: pd.Timestamp,
-                          end: pd.Timestamp):
-        """Альтернативный конструктор для создания из pandas.Timestamp.
+    def __init__(
+        self,
+        open: str | Decimal,
+        close: str | Decimal,
+        high: str | Decimal,
+        low: str | Decimal,
+        value: str | Decimal,
+        volume: str | Decimal,
+        begin: pd.Timestamp | datetime | str,
+        end: pd.Timestamp | datetime | str,
+    ):
+        """Преобразует поля в Decimal"""
+        self.open = Decimal(open)
+        self.close = Decimal(close)
+        self.high = Decimal(high)
+        self.low = Decimal(low)
+        self.value = Decimal(value)
+        self.volume = Decimal(volume)
 
-        Args:
-            open: Цена открытия
-            close: Цена закрытия
-            high: Максимальная цена
-            low: Минимальная цена
-            value: Оборот в рублях
-            volume: Объем в штуках
-            begin: Время начала (pd.Timestamp)
-            end: Время окончания (pd.Timestamp)
-            
-        Returns:
-            StockCandle: Созданный объект свечи
-        """
-        return cls(
-            open=open,
-            close=close,
-            high=high,
-            low=low,
-            value=value,
-            volume=volume,
-            begin=begin.isoformat(sep=' ', timespec='seconds'),
-            end=end.isoformat(sep=' ', timespec='seconds')
-        )
+        if isinstance(begin, pd.Timestamp):
+            begin = begin.to_pydatetime()
 
-    @classmethod
-    def from_datetime(cls,
-                      open: Decimal,
-                      close: Decimal,
-                      high: Decimal,
-                      low: Decimal,
-                      value: Decimal,
-                      volume: Decimal,
-                      begin: datetime,
-                      end: datetime):
-        """Альтернативный конструктор для создания из datetime.
+        if isinstance(end, pd.Timestamp):
+            end = end.to_pydatetime()
 
-        Args:
-            begin: Время начала (datetime)
-            end: Время окончания (datetime)
-        """
-        return cls(
-            open=open,
-            close=close,
-            high=high,
-            low=low,
-            value=value,
-            volume=volume,
-            begin=begin.isoformat(sep=' ', timespec='seconds'),
-            end=end.isoformat(sep=' ', timespec='seconds')
-        )
+        if isinstance(begin, str):
+            self.begin = begin
+        else:
+            self.begin = begin.isoformat(sep=" ", timespec="seconds")
+
+        if isinstance(end, str):
+            self.end = end
+        else:
+            self.end = end.isoformat(sep=" ", timespec="seconds")

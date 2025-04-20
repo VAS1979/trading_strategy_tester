@@ -1,7 +1,7 @@
 """ Тестирование метода test_read_csv_with_header класса DataReader """
 
-from trading_strategy_tester.services.data_reader import DataReader
 from trading_strategy_tester.models.trading_data import TradingData
+from trading_strategy_tester.services.data_reader import DataReader
 
 
 def test_read_csv_with_header(tmp_path, sample_csv_data):

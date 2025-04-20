@@ -10,14 +10,14 @@
     <header class="page-header">  <!-- Отдельный блок перед wrapper -->
         <h1>Анализатор торговых стратегий</h1>
     </header>
-    <div id="wrapper">       
+    <div id="wrapper">
         <div id="parameters">
             <!-- Форма для запроса данных -->
             <h2>Запрос исторических данных</h2>
             <form id="fetch-data-form" action="/fetch-data" method="post">
                 <label for="ticker">Тикер:</label>
                 <input type="text" id="ticker" name="ticker"
-                pattern="[A-Z]+" 
+                pattern="[A-Z]+"
                 title="Только заглавные буквы (без цифр и символов)"
                 required><br><br>
 
@@ -26,7 +26,7 @@
                 required><br><br>
 
                 <label for="end">Конечная дата:</label>
-                <input type="date" id="end" name="end" 
+                <input type="date" id="end" name="end"
                 required><br><br>
 
                 <button type="submit">Запросить данные</button>
@@ -37,7 +37,7 @@
             <form id="generate-report-form" action="/generate-report" method="post">
                 <label for="report-ticker">Тикер:</label>
                 <input type="text" id="report-ticker" name="ticker"
-                pattern="[A-Z]+" 
+                pattern="[A-Z]+"
                 title="Только заглавные буквы (без цифр и символов)"
                 required><br><br>
 

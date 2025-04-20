@@ -1,21 +1,21 @@
 """ Содержит класс, который парсит датафрейм по акции на
 исторических данных. """
 
-from moexalgo import Ticker
 import pandas as pd
+from moexalgo import Ticker
 
-from trading_strategy_tester.utils.logger import logging
 from trading_strategy_tester.api.schemas import RequestParameters
+from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 
 
 class DataframeParser:
-    """ Класс для обработки запроса и получения
-    датафрейм от MOEX. """
+    """Класс для обработки запроса и получения
+    датафрейм от MOEX."""
 
     def __init__(self, parameters: RequestParameters):
-        """ Инициализация класса DataParser.
+        """Инициализация класса DataParser.
         Args:
             parameters (RequestParameters): Параметры запроса.
         """
@@ -35,8 +35,7 @@ class DataframeParser:
             ticker = Ticker(self.parameters.ticker)
 
             # Свечи по акции за период
-            df = ticker.candles(start=self.parameters.start,
-                                end=self.parameters.end, period='1d')
+            df = ticker.candles(start=self.parameters.start, end=self.parameters.end, period="1d")
 
             # Проверка, что данные получены
             if df.empty:

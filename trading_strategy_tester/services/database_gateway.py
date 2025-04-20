@@ -1,9 +1,9 @@
 """ Модуль для работы с SQLite базой данных тестера торговых стратегий. """
 
 import sqlite3
-from pathlib import Path
 from decimal import Decimal
-from typing import List, Dict
+from pathlib import Path
+from typing import Any
 
 from trading_strategy_tester.models.stock_candle import StockCandle
 from trading_strategy_tester.models.trading_result import TradingResult
@@ -13,23 +13,23 @@ logger = logging.getLogger(__name__)
 
 
 class DatabaseGateway:
-    """ Класс для работы с SQLite базой данных тестера торговых стратегий. """
+    """Класс для работы с SQLite базой данных тестера торговых стратегий."""
 
     def __init__(self):
-        """ Инициализирует параметры подключения к бд. """
+        """Инициализирует параметры подключения к бд."""
 
         self.conn = sqlite3.connect(DatabaseGateway._get_db_path())
         self.cursor = self.conn.cursor()
 
     def __del__(self):
-        """ Закрывает соединение при удалении объекта. """
+        """Закрывает соединение при удалении объекта."""
 
-        if hasattr(self, 'conn'):
+        if hasattr(self, "conn"):
             self.conn.close()
 
     @staticmethod
     def _get_db_path() -> Path:
-        """ Возвращает путь к файлу базы данных. """
+        """Возвращает путь к файлу базы данных."""
 
         path_dir = Path.cwd() / "database"
         path_dir.mkdir(parents=True, exist_ok=True)
@@ -40,10 +40,7 @@ class DatabaseGateway:
         """Проверяет существование таблицы в базе данных."""
 
         try:
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                (table_name,)
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
             return cursor.fetchone() is not None
         except sqlite3.Error as e:
             logger.error("Ошибка проверки существования таблицы: %s", e)
@@ -55,13 +52,9 @@ class DatabaseGateway:
 
         if DatabaseGateway._table_exists(cursor, table_name):
             cursor.execute(f"DELETE FROM {table_name}")
-            cursor.execute(
-                    f"DELETE FROM sqlite_sequence WHERE name='{table_name}'"
-            )
+            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{table_name}'")
 
-    def saves_candles(self, candles: List[StockCandle],
-                      ticker: str,
-                      clear_existing: bool = True) -> Path:
+    def saves_candles(self, candles: list[StockCandle], ticker: str, clear_existing: bool = True) -> Path:
         """Сохраняет свечи в базу данных."""
 
         filepath = DatabaseGateway._get_db_path()
@@ -74,10 +67,10 @@ class DatabaseGateway:
                 if clear_existing:
                     # Полное пересоздание таблицы вместо очистки
                     cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-                    logger.debug("Таблица %s удалена для пересоздания",
-                                 table_name)
+                    logger.debug("Таблица %s удалена для пересоздания", table_name)
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     open TEXT NOT NULL,
@@ -90,7 +83,8 @@ class DatabaseGateway:
                     end TIMESTAMP NOT NULL,
                     UNIQUE(begin, end) ON CONFLICT REPLACE
                 )
-                """)
+                """
+                )
 
                 insert_query = f"""
                 INSERT INTO {table_name}
@@ -106,22 +100,19 @@ class DatabaseGateway:
                         str(candle.low),
                         str(candle.value),
                         str(candle.volume),
-                        candle.begin.to_pydatetime(),
-                        candle.end.to_pydatetime()
+                        candle.begin.to_pydatetime(),  # type: ignore
+                        candle.end.to_pydatetime(),  # type: ignore
                     )
                     cursor.execute(insert_query, data)
 
-                logger.info("Сохранено %s датафреймов в %s",
-                            len(candles), table_name)
+                logger.info("Сохранено %s датафреймов в %s", len(candles), table_name)
         except sqlite3.Error as e:
             logger.error("Ошибка сохранения датафреймов: %s", e)
             raise
 
         return filepath
 
-    def saves_results(self, results: List[TradingResult],
-                      ticker: str,
-                      clear_existing: bool = True) -> Path:
+    def saves_results(self, results: list[TradingResult], ticker: str, clear_existing: bool = True) -> Path:
         """Сохраняет результаты в базу данных с
         возможностью дублирования дат."""
 
@@ -135,10 +126,10 @@ class DatabaseGateway:
                 if clear_existing:
                     # Полное пересоздание таблицы вместо очистки
                     cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-                    logger.debug("Таблица %s удалена для пересоздания",
-                                 table_name)
+                    logger.debug("Таблица %s удалена для пересоздания", table_name)
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     date_str TEXT NOT NULL,
@@ -152,7 +143,8 @@ class DatabaseGateway:
                     tax_sum TEXT NOT NULL,
                     total_tax TEXT NOT NULL
                 )
-                """)
+                """
+                )
                 logger.debug("Таблица %s создана/проверена", table_name)
 
                 insert_query = f"""
@@ -174,19 +166,18 @@ class DatabaseGateway:
                         str(result.overall_result),
                         str(result.comiss_sum),
                         str(result.tax_sum),
-                        str(result.total_tax)
+                        str(result.total_tax),
                     )
                     cursor.execute(insert_query, data)
 
-                logger.info("Сохранено %s записей в %s",
-                            len(results), table_name)
+                logger.info("Сохранено %s записей в %s", len(results), table_name)
         except sqlite3.Error as e:
             logger.error("Ошибка сохранения результатов: %s", e)
             raise
 
         return filepath
 
-    def saves_calculations(self, results: Dict[str, any], ticker: str) -> Path:
+    def saves_calculations(self, results: dict[str, Any], ticker: str) -> Path:
         """Сохраняет результаты расчетов в базу данных."""
 
         filepath = DatabaseGateway._get_db_path()
@@ -196,7 +187,8 @@ class DatabaseGateway:
             with self.conn:
                 cursor = self.conn.cursor()
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -224,9 +216,11 @@ class DatabaseGateway:
                            buy_price, sell_price)
                     ON CONFLICT REPLACE
                 )
-                """)
+                """
+                )
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                 INSERT INTO {table_name} (
                     start_date, end_date, initial_cache, buy_price,
                     sell_price, buy_count, sell_count, comission_percent,
@@ -237,28 +231,30 @@ class DatabaseGateway:
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    results["start_date"],
-                    results["end_date"],
-                    str(results.get("initial_cache", "0")),
-                    str(results.get("buy_price", "0")),
-                    str(results.get("sell_price", "0")),
-                    int(results.get("buy_count", 0)),
-                    int(results.get("sell_count", 0)),
-                    str(results.get("comission_percent", "0")),
-                    str(results.get("tax_percent", "0")),
-                    int(results.get("invest_period_days", 0)),
-                    str(results.get("invest_period_years", "0")),
-                    str(results.get("total_income_sum", "0")),
-                    str(results.get("total_income_perc", "0")),
-                    str(results.get("incom_year_sum", "0")),
-                    str(results.get("incom_year_pers", "0")),
-                    str(results.get("accumulated_commission", "0")),
-                    str(results.get("final_cache", "0")),
-                    str(results.get("final_amount_in_shares", "0")),
-                    str(results.get("final_overall_result", "0")),
-                    str(results.get("total_tax", "0"))
-                ))
+                """,
+                    (
+                        results["start_date"],
+                        results["end_date"],
+                        str(results.get("initial_cache", "0")),
+                        str(results.get("buy_price", "0")),
+                        str(results.get("sell_price", "0")),
+                        int(results.get("buy_count", 0)),
+                        int(results.get("sell_count", 0)),
+                        str(results.get("comission_percent", "0")),
+                        str(results.get("tax_percent", "0")),
+                        int(results.get("invest_period_days", 0)),
+                        str(results.get("invest_period_years", "0")),
+                        str(results.get("total_income_sum", "0")),
+                        str(results.get("total_income_perc", "0")),
+                        str(results.get("incom_year_sum", "0")),
+                        str(results.get("incom_year_pers", "0")),
+                        str(results.get("accumulated_commission", "0")),
+                        str(results.get("final_cache", "0")),
+                        str(results.get("final_amount_in_shares", "0")),
+                        str(results.get("final_overall_result", "0")),
+                        str(results.get("total_tax", "0")),
+                    ),
+                )
 
                 logger.info("Сохранение расчетов в %s", table_name)
         except sqlite3.Error as e:
@@ -267,7 +263,7 @@ class DatabaseGateway:
 
         return filepath
 
-    def load_dataframe_history(self, ticker: str) -> List[StockCandle]:
+    def load_dataframe_history(self, ticker: str) -> list[StockCandle]:
         """
         Загружает данные свечей из базы данных.
 
@@ -288,16 +284,16 @@ class DatabaseGateway:
             with self.conn:
                 cursor = self.conn.cursor()
                 if not DatabaseGateway._table_exists(cursor, table_name):
-                    raise ValueError(
-                        f"Таблица {table_name} не найдена в базе данных"
-                    )
+                    raise ValueError(f"Таблица {table_name} не найдена в базе данных")
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT open, close, high, low, value, volume,
                     begin, end
                     FROM {table_name}
                     ORDER BY begin
-                    """)
+                    """
+                )
 
                 return [
                     StockCandle(
@@ -308,14 +304,14 @@ class DatabaseGateway:
                         value=Decimal(row[4]),
                         volume=Decimal(row[5]),
                         begin=str(row[6]),
-                        end=str(row[7])
+                        end=str(row[7]),
                     )
                     for row in cursor
                 ]
         except sqlite3.Error as e:
             raise sqlite3.Error(f"Ошибка при загрузке данных: {e}")
 
-    def load_strategy_results(self, ticker: str) -> List[dict]:
+    def load_strategy_results(self, ticker: str) -> list[dict[str, Any]]:
         """
         Загружает результаты торговой стратегии из таблицы результатов.
 
@@ -337,17 +333,17 @@ class DatabaseGateway:
             with self.conn:
                 cursor = self.conn.cursor()
                 if not DatabaseGateway._table_exists(cursor, table_name):
-                    raise ValueError(
-                        f"Таблица {table_name} не найдена в базе данных"
-                    )
+                    raise ValueError(f"Таблица {table_name} не найдена в базе данных")
 
-                cursor.execute(f"""
+                cursor.execute(
+                    f"""
                     SELECT date_str, max_price, min_price, cache,
                            share_count, amount_in_shares, overall_result,
                            comiss_sum, tax_sum, total_tax
                     FROM {table_name}
                     ORDER BY date_str
-                    """)
+                    """
+                )
 
                 columns = [col[0] for col in cursor.description]
                 return [dict(zip(columns, row)) for row in cursor]

@@ -104,7 +104,7 @@ document.getElementById('generate-report-form').addEventListener('submit', async
 
 document.getElementById('show-history-btn').addEventListener('click', function() {
     const ticker = document.getElementById('report-ticker').value.trim();
-    
+
     if (!ticker) {
         alert('Пожалуйста, введите тикер');
         return;
@@ -183,14 +183,14 @@ document.getElementById('show-history-btn').addEventListener('click', function()
                         function highlightQuantityChanges() {
                             const rows = document.querySelectorAll('.trading-results tr:not(:first-child)');
                             let prevQuantity = null;
-                            
+
                             rows.forEach(row => {
                                 const cells = row.querySelectorAll('td');
                                 if (cells.length > 4) { // Проверяем, что есть 5-я колонка
                                     const quantityCell = cells[4]; // 5-я колонка с количеством акций
                                     const quantityText = quantityCell.textContent.trim().replace(/\s+/g, '');
                                     const currentQuantity = parseInt(quantityText) || 0;
-                                    
+
                                     if (prevQuantity !== null) {
                                         if (currentQuantity > prevQuantity) {
                                             row.classList.add('increase');
@@ -202,7 +202,7 @@ document.getElementById('show-history-btn').addEventListener('click', function()
                                 }
                             });
                         }
-                        
+
                         document.addEventListener('DOMContentLoaded', highlightQuantityChanges);
                     </script>
                     ${data.html_table.replace(/<th([^>]*)>([^<]*)<\/th>/g, '<th$1><span>$2</span></th>')}

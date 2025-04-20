@@ -1,11 +1,12 @@
 """ Точка входа в приложение """
 
 from pathlib import Path
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from fastapi.staticfiles import StaticFiles
+
 import uvicorn
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from trading_strategy_tester.api.routers import router
 from trading_strategy_tester.utils.logger import logging
@@ -15,11 +16,7 @@ logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 STATIC_DIR = BASE_DIR / "static"
 
-app = FastAPI(
-    title="Trading Strategy Tester",
-    description="API для тестирования торговых стратегий.",
-    version="1.0.0"
-)
+app = FastAPI(title="Trading Strategy Tester", description="API для тестирования торговых стратегий.", version="1.0.0")
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
@@ -27,8 +24,7 @@ app.include_router(router)
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request,
-                                       exc: RequestValidationError):
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """
     Обработчик ошибок валидации запросов.
     Логирует ошибку и возвращает ответ с деталями ошибки.
@@ -52,6 +48,7 @@ async def general_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"detail": "Произошла непредвиденная ошибка на сервере"},
     )
+
 
 if __name__ == "__main__":
     logger.info("Запуск сервера Uvicorn")

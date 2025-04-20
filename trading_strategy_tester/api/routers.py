@@ -1,14 +1,14 @@
 """ Маршруты FastAPI """
 
-from decimal import Decimal
-from fastapi import APIRouter, Request, Form
+from typing import Annotated
+
+from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from trading_strategy_tester.api.schemas import (RequestParameters,
-                                                 StrategyParameters)
-from trading_strategy_tester.services.facade import Facade
+from trading_strategy_tester.api.schemas import RequestParameters, StrategyParameters
 from trading_strategy_tester.services.database_gateway import DatabaseGateway
+from trading_strategy_tester.services.facade import Facade
 from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
@@ -22,56 +22,30 @@ async def read_root(request: Request):
     """
     Возвращает HTML-страницу для ввода данных.
     """
-    return templates.TemplateResponse(name="index.html",
-                                      context={"request": request})
+    return templates.TemplateResponse(name="index.html", context={"request": request})
 
 
 @router.post("/api/fetch-data")
-async def fetch_data(
-    ticker: str = Form(...),
-    start: str = Form(...),
-    end: str = Form(...)
-):
+async def fetch_data(params: Annotated[RequestParameters, Form()]):
     """
     Получает данные с MOEX и сохраняет их в CSV-файл.
     """
 
-    parameters = RequestParameters(
-        ticker=ticker,
-        start=start,
-        end=end
-    )
-    success = Facade.run_parsing(parameters)
+    success = Facade.run_parsing(param=params)
     return {"success": success}
 
 
 @router.post("/api/generate-report")
-async def generate_report(
-    ticker: str = Form(...),
-    initial_cache: str = Form(...),
-    buy_price: str = Form(...),
-    sell_price: str = Form(...),
-    commission_rate: str = Form(...),
-    tax_rate: str = Form(...)
-):
+async def generate_report(params: Annotated[StrategyParameters, Form()]):
     """
     Запускает торговую стратегию.
     """
-
-    parameters = StrategyParameters(
-        ticker=ticker,
-        initial_cache=Decimal(initial_cache),
-        buy_price=Decimal(buy_price),
-        sell_price=Decimal(sell_price),
-        commission_rate=Decimal(commission_rate),
-        tax_rate=Decimal(tax_rate)
-    )
-    success = Facade.run_trading_strategy(parameters)
+    success = Facade.run_trading_strategy(param=params)
     return {"success": success}
 
 
 @router.post("/api/show-history")
-async def show_history(ticker: str = Form(...)):
+async def show_history(ticker: Annotated[str, Form()]):
     """
     Возвращает HTML таблицу с историей торговой стратегии.
     Данные берутся из таблицы {ticker}_results в БД.
@@ -124,8 +98,4 @@ async def show_history(ticker: str = Form(...)):
     </table>
     """
 
-    return {
-        "success": True,
-        "html_table": html_table,
-        "ticker": ticker.upper()
-    }
+    return {"success": True, "html_table": html_table, "ticker": ticker.upper()}
