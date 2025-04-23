@@ -176,14 +176,14 @@ class StrategyCalculator:
 
         # Округление всех значений
         rounded_values = {
-            'max_price': self.round_money(row.high),
-            'min_price': self.round_money(row.low),
-            'cache': self.round_money(self.cache),
-            'comiss_sum': self.round_money(self.comiss_sum),
-            'amount_in_shares': self.round_money(self.amount_in_shares),
-            'overall_result': self.round_money(self.overall_result),
-            'total_tax': self.round_money(self.total_tax),
-            'tax_sum': self.round_money(self.tax_sum)
+            "max_price": self.round_money(row.high),
+            "min_price": self.round_money(row.low),
+            "cache": self.round_money(self.cache),
+            "comiss_sum": self.round_money(self.comiss_sum),
+            "amount_in_shares": self.round_money(self.amount_in_shares),
+            "overall_result": self.round_money(self.overall_result),
+            "total_tax": self.round_money(self.total_tax),
+            "tax_sum": self.round_money(self.tax_sum)
         }
 
         return TradingResult(
