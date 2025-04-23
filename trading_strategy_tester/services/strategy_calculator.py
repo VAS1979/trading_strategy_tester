@@ -1,5 +1,7 @@
-""" Содержит класс, моделирующий торговые операции на
-каждый торговый день по стратегии. """
+"""
+Содержит класс, моделирующий торговые операции на
+каждый торговый день по стратегии.
+"""
 
 import logging
 from datetime import datetime
@@ -41,7 +43,6 @@ class StrategyCalculator:
                 года, для исключения повторного списания.
             cache (Decimal): Сумма кэша.
         """
-
         self.parameters = parameters
         getcontext().prec = 10
 
@@ -67,7 +68,6 @@ class StrategyCalculator:
         Returns:
             Округленное значение с банковским округлением.
         """
-
         return value.quantize(cls.MONEY_PRECISION,
                               rounding=cls.ROUNDING_METHOD)
 
@@ -87,7 +87,6 @@ class StrategyCalculator:
         Returns:
             bool: Была ли совершена покупка.
         """
-
         buy_price = self.parameters.buy_price
         commission_rate = self.parameters.commission_rate
 
@@ -126,7 +125,6 @@ class StrategyCalculator:
         Returns:
             Decimal: Сумма налога от сделки.
         """
-
         sell_price = self.parameters.sell_price
         commission_rate = self.parameters.commission_rate
         tax_rate = self.parameters.tax_rate
@@ -150,7 +148,6 @@ class StrategyCalculator:
         """
         Обработка налогов в конце года.
         """
-
         year = current_date.year
         month = current_date.month
         day = current_date.day
@@ -169,7 +166,6 @@ class StrategyCalculator:
         """
         Создание объекта TradingResult для текущего дня.
         """
-
         closing_price = row.close
         date_str = row.begin.split()[0]
 
@@ -212,7 +208,6 @@ class StrategyCalculator:
              comiss_sum, tax_sum, total_tax].
             counting_transactions: Список сделок [buy_count, sell_count].
         """
-
         if data is None:
             logger.error("Входные данные равны None.")
             return [], []

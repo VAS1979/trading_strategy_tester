@@ -1,5 +1,7 @@
-""" Модуль для хранения данных о торговых свечах с
-строковым представлением дат """
+"""
+Модуль для хранения данных о торговых свечах с
+строковым представлением дат.
+"""
 
 from dataclasses import dataclass
 from decimal import Decimal
@@ -15,7 +17,6 @@ class StockCandle:
     - Цены как Decimal для точных расчетов
     - Даты в строковом ISO формате (YYYY-MM-DD HH:MM:SS)
     """
-
     open: Decimal
     close: Decimal
     high: Decimal
@@ -46,7 +47,7 @@ class StockCandle:
             volume: Объем в штуках
             begin: Время начала (pd.Timestamp)
             end: Время окончания (pd.Timestamp)
-            
+
         Returns:
             StockCandle: Созданный объект свечи
         """

@@ -1,12 +1,13 @@
-""" Точка входа в приложение """
+"""Точка входа в приложение."""
 
 from pathlib import Path
+
 import logging
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
-import uvicorn
 
 from trading_strategy_tester.api.routers import router
 from trading_strategy_tester.utils.logger import setup_logging
@@ -34,7 +35,6 @@ async def validation_exception_handler(request: Request,
     Обработчик ошибок валидации запросов.
     Логирует ошибку и возвращает ответ с деталями ошибки.
     """
-
     logger.error("Ошибка валидации: %s", exc)
     return JSONResponse(
         status_code=422,

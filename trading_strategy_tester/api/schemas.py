@@ -1,6 +1,7 @@
-" Содержит модели Pydantic"
+"Содержит модели Pydantic."
 
 from decimal import Decimal
+
 from pydantic import BaseModel
 
 
@@ -13,7 +14,6 @@ class RequestParameters(BaseModel):
         start (str): Начальная дата запроса истории торгов.
         end (str): Конечная дата запроса истории торгов.
     """
-
     ticker: str
     start: str
     end: str
@@ -30,7 +30,6 @@ class StrategyParameters(BaseModel):
         commission_rate (Decimal): Процентая ставка комиссии брокера.
         tax_rate (Decimal): Налоговая ставка.
     """
-
     ticker: str
     initial_cache: Decimal
     buy_price: Decimal

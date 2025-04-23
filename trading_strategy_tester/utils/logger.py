@@ -1,11 +1,11 @@
-""" Модуль логирования """
+"""Модуль логирования."""
 
 import logging
 from pathlib import Path
 
 
 def setup_logging():
-    """Настройка глобального логирования"""
+    """Настройка глобального логирования."""
     log_dir = Path.cwd() / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
 

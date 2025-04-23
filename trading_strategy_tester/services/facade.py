@@ -1,5 +1,7 @@
-""" Содержит методы класса, обрабатывающие цепочку последовательных
-вызовов функций и классов для работы приложения. """
+"""
+Содержит методы класса, обрабатывающие цепочку последовательных
+вызовов функций и классов для работы приложения.
+"""
 
 import logging
 from concurrent.futures import ThreadPoolExecutor
@@ -20,8 +22,10 @@ logger = logging.getLogger(__name__)
 
 
 class Facade:
-    """ Класс обрабатывает цепочку вызовов
-    при работе приложения. """
+    """
+    Класс обрабатывает цепочку вызовов
+    при работе приложения.
+    """
 
     # Пул потоков для синхронных операций
     _thread_pool = ThreadPoolExecutor(max_workers=4)
@@ -33,7 +37,6 @@ class Facade:
         Args:
             param (RequestParameters): Параметры запроса.
         """
-
         ticker = param.ticker.upper()
 
         # Запрос датафрэйма
@@ -68,7 +71,6 @@ class Facade:
             Optional[Tuple[List[TradingResult], List[int]]]: Результаты
                 расчетов и количество сделок.
         """
-
         ticker = param.ticker.upper()
 
         # Асинхронная загрузка данных из БД

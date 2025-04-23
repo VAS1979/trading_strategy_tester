@@ -1,5 +1,7 @@
-""" Содержит класс, который рассчитывает
-итоговые финансовые результаты стратегии. """
+"""
+Содержит класс, который рассчитывает
+итоговые финансовые результаты стратегии.
+"""
 
 import logging
 from datetime import datetime
@@ -21,7 +23,6 @@ class CalculateResult:
         """Унифицированное округление денежных величин
         с банковским округлением.
         """
-
         return value.quantize(Decimal("1.00"), ROUND_HALF_EVEN)
 
     def calculates_results(self, data: List[TradingResult],
@@ -63,7 +64,6 @@ class CalculateResult:
             TypeError: Если тип данных не соответствует ожидаемому.
             ZeroDivisionError: Если происходит деление на ноль.
         """
-
         results = {}
 
         # Блок обработки дат

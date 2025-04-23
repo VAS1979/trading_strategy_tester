@@ -1,4 +1,4 @@
-""" Маршруты FastAPI """
+"""Маршруты FastAPI."""
 
 import logging
 from decimal import Decimal
@@ -32,10 +32,7 @@ async def fetch_data(
     start: str = Form(...),
     end: str = Form(...)
 ):
-    """
-    Получает данные с MOEX и сохраняет их.
-    """
-
+    """Получает данные с MOEX и сохраняет их."""
     parameters = RequestParameters(
         ticker=ticker,
         start=start,
@@ -54,10 +51,7 @@ async def generate_report(
     commission_rate: str = Form(...),
     tax_rate: str = Form(...)
 ):
-    """
-    Запускает торговую стратегию.
-    """
-
+    """Запускает торговую стратегию."""
     parameters = StrategyParameters(
         ticker=ticker,
         initial_cache=Decimal(initial_cache),
@@ -76,7 +70,6 @@ async def show_history(ticker: str = Form(...)):
     Возвращает HTML таблицу с историей торговой стратегии.
     Данные берутся из таблицы {ticker}_results в БД.
     """
-
     async with DatabaseGateway() as gateway:
         results = await gateway.load_strategy_results(ticker)
 

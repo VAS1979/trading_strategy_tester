@@ -1,5 +1,7 @@
-""" Содержит функцию, которая прреобразует DataFrame в
-список объектов StockCandle с str значениями. """
+"""
+Содержит функцию, которая прреобразует DataFrame в
+список объектов StockCandle с str значениями.
+"""
 
 from typing import List
 import pandas as pd
@@ -17,7 +19,6 @@ def converts_to_str(df: pd.DataFrame) -> List[StockCandle]:
     Returns:
         List[StockCandle]: Список объектов StockCandle.
     """
-
     if df.empty:
         return []
 

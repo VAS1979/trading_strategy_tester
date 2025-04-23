@@ -19,7 +19,6 @@ class DataframeParser:
         Args:
             parameters (RequestParameters): Параметры запроса.
         """
-
         self.parameters = parameters
 
     def fetch_data(self) -> pd.DataFrame:
@@ -29,7 +28,6 @@ class DataframeParser:
         Returns:
             pd.DataFrame: DataFrame с данными по акции.
         """
-
         try:
             # Объект класса Ticker
             ticker = Ticker(self.parameters.ticker)

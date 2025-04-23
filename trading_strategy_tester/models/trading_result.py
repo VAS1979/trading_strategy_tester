@@ -22,7 +22,6 @@ class TradingResult:
         tax_sum (Decimal): Сумма налога, уплаченного за день.
         total_tax (Decimal): Общая сумма налога, уплаченного за весь период.
     """
-
     date_str: str
     max_price: Decimal
     min_price: Decimal
