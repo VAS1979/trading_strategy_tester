@@ -1,5 +1,6 @@
 """ Маршруты FastAPI """
 
+import logging
 from decimal import Decimal
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
@@ -9,7 +10,6 @@ from trading_strategy_tester.api.schemas import (RequestParameters,
                                                  StrategyParameters)
 from trading_strategy_tester.services.facade import Facade
 from trading_strategy_tester.services.database_gateway import DatabaseGateway
-from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ async def fetch_data(
     end: str = Form(...)
 ):
     """
-    Получает данные с MOEX и сохраняет их в CSV-файл.
+    Получает данные с MOEX и сохраняет их.
     """
 
     parameters = RequestParameters(
@@ -41,7 +41,7 @@ async def fetch_data(
         start=start,
         end=end
     )
-    success = Facade.run_parsing(parameters)
+    success = await Facade.run_parsing(parameters)
     return {"success": success}
 
 
@@ -66,7 +66,7 @@ async def generate_report(
         commission_rate=Decimal(commission_rate),
         tax_rate=Decimal(tax_rate)
     )
-    success = Facade.run_trading_strategy(parameters)
+    success = await Facade.run_trading_strategy(parameters)
     return {"success": success}
 
 
@@ -77,8 +77,8 @@ async def show_history(ticker: str = Form(...)):
     Данные берутся из таблицы {ticker}_results в БД.
     """
 
-    gateway = DatabaseGateway()
-    results = gateway.load_strategy_results(ticker)
+    async with DatabaseGateway() as gateway:
+        results = await gateway.load_strategy_results(ticker)
 
     if not results:
         return {"success": False, "error": "Нет данных для отображения"}

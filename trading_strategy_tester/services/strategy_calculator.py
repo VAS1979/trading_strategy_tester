@@ -1,6 +1,7 @@
 """ Содержит класс, моделирующий торговые операции на
 каждый торговый день по стратегии. """
 
+import logging
 from datetime import datetime
 from typing import List, Tuple
 from decimal import Decimal, getcontext, ROUND_HALF_EVEN
@@ -8,7 +9,6 @@ from decimal import Decimal, getcontext, ROUND_HALF_EVEN
 from trading_strategy_tester.models.stock_candle import StockCandle
 from trading_strategy_tester.models.trading_result import TradingResult
 from trading_strategy_tester.api.schemas import StrategyParameters
-from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 

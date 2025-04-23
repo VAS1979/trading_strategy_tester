@@ -1,10 +1,10 @@
 """ Содержит класс, который парсит датафрейм по акции на
 исторических данных. """
 
+import logging
 from moexalgo import Ticker
 import pandas as pd
 
-from trading_strategy_tester.utils.logger import logging
 from trading_strategy_tester.api.schemas import RequestParameters
 
 logger = logging.getLogger(__name__)

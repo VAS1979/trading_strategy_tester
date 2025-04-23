@@ -1,6 +1,8 @@
 """ Содержит методы класса, обрабатывающие цепочку последовательных
 вызовов функций и классов для работы приложения. """
 
+import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Tuple, List
 
 from trading_strategy_tester.api.schemas import StrategyParameters
@@ -13,7 +15,6 @@ from trading_strategy_tester.services.database_gateway import DatabaseGateway
 from trading_strategy_tester.services.strategy_calculator import (
     StrategyCalculator)
 from trading_strategy_tester.services.calculate_results import CalculateResult
-from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +23,11 @@ class Facade:
     """ Класс обрабатывает цепочку вызовов
     при работе приложения. """
 
+    # Пул потоков для синхронных операций
+    _thread_pool = ThreadPoolExecutor(max_workers=4)
+
     @staticmethod
-    def run_parsing(param: RequestParameters) -> str:
+    async def run_parsing(param: RequestParameters) -> str:
         """ Запускает парсер и сохраняет результат в базу данных.
 
         Args:
@@ -39,15 +43,19 @@ class Facade:
         # Преобразование DataFrame в список объектов StockCandle с str.
         processed_df = converts_to_str(df)
 
-        # Сохранение данных парсера в SQL
-        gateway = DatabaseGateway()
-        gateway.saves_candles(processed_df, ticker)
+        # Функция для сохранения в БД
+        async def save_to_db():
+            async with DatabaseGateway() as gateway:
+                await gateway.saves_candles(processed_df, ticker)
+
+        # Сохранение в БД
+        await save_to_db()
 
         result = f"Исторические данные {ticker} успешно загружены."
         return result
 
     @staticmethod
-    def run_trading_strategy(
+    async def run_trading_strategy(
         param: StrategyParameters
          ) -> Optional[Tuple[List[TradingResult], List[int]]]:
         """
@@ -62,10 +70,10 @@ class Facade:
         """
 
         ticker = param.ticker.upper()
-        gateway = DatabaseGateway()
 
-        # Загрузка истории из базы данных
-        sql_data = gateway.load_dataframe_history(ticker)
+        # Асинхронная загрузка данных из БД
+        async with DatabaseGateway() as gateway:
+            sql_data = await gateway.load_dataframe_history(ticker)
 
         # Инициализация StrategyCalculator
         strategy_calculator = StrategyCalculator(param)
@@ -78,10 +86,11 @@ class Facade:
         final_result = calc_result.calculates_results(results, param,
                                                       transactions)
 
-        # Сохранение результатов стратегии по дням в sql
-        gateway.saves_results(results, ticker)
+        # Асинхронное сохранение результатов
+        async with DatabaseGateway() as gateway:
+            await gateway.saves_results(results, ticker)
 
-        # Сохранение итоговых рассчетов
-        gateway.saves_calculations(final_result, ticker)
+        async with DatabaseGateway() as gateway:
+            await gateway.saves_calculations(final_result, ticker)
 
         return final_result

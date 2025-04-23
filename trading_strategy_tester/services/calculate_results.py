@@ -1,12 +1,12 @@
 """ Содержит класс, который рассчитывает
 итоговые финансовые результаты стратегии. """
 
+import logging
 from datetime import datetime
 from typing import Dict, List
 from decimal import Decimal, ROUND_HALF_EVEN, getcontext
 from trading_strategy_tester.api.schemas import StrategyParameters
 from trading_strategy_tester.models.trading_result import TradingResult
-from trading_strategy_tester.utils.logger import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,7 @@
 """ Точка входа в приложение """
 
 from pathlib import Path
+import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
@@ -8,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from trading_strategy_tester.api.routers import router
-from trading_strategy_tester.utils.logger import logging
+from trading_strategy_tester.utils.logger import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -54,5 +55,6 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 if __name__ == "__main__":
+    setup_logging()
     logger.info("Запуск сервера Uvicorn")
     uvicorn.run(app, host="127.0.0.1", port=8080)
